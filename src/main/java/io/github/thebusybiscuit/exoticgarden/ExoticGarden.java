@@ -51,14 +51,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 public class ExoticGarden extends JavaPlugin implements SlimefunAddon {
@@ -81,6 +74,8 @@ public class ExoticGarden extends JavaPlugin implements SlimefunAddon {
     private ItemGroup drinksItemGroup;
     private ItemGroup magicalItemGroup;
     private Kitchen kitchen;
+
+    private static final Random random = new Random();
 
     @Override
     public void onEnable() {
@@ -369,6 +364,13 @@ public class ExoticGarden extends JavaPlugin implements SlimefunAddon {
         magicalEssence.register(this);
     }
 
+    public static ItemStack berryOrSapling(Berry berry) {
+        if (random.nextInt(3) == 0 && berry.getType() != PlantType.ORE_PLANT) {
+            return getItem(berry.toBush());
+        }
+        return berry.getItem().clone();
+    }
+
     @Nullable
     public static ItemStack harvestPlant(@Nonnull Block block) {
         SlimefunItem item = BlockStorage.check(block);
@@ -397,12 +399,12 @@ public class ExoticGarden extends JavaPlugin implements SlimefunAddon {
                         plant.setType(Material.OAK_SAPLING);
                         BlockStorage.deleteLocationInfoUnsafely(plant.getLocation(), false);
                         BlockStorage.store(plant, getItem(berry.toBush()));
-                        return berry.getItem().clone();
+                        return berryOrSapling(berry);
                     default:
                         block.setType(Material.OAK_SAPLING);
                         BlockStorage.deleteLocationInfoUnsafely(block.getLocation(), false);
                         BlockStorage.store(block, getItem(berry.toBush()));
-                        return berry.getItem().clone();
+                        return berryOrSapling(berry);
                 }
             }
         }
